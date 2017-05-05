@@ -25,7 +25,7 @@ namespace EDIDParser.Descriptors
         /// <summary>
         ///     Gets the gamma value (1.0–3.54)
         /// </summary>
-        public float Gamma => (Reader.ReadByte(Offset + 4) + 100)/100f;
+        public double Gamma => (Reader.ReadByte(Offset + 4) + 100)/100d;
 
         /// <summary>
         ///     Gets the white point index number
@@ -46,26 +46,26 @@ namespace EDIDParser.Descriptors
         /// <summary>
         ///     Gets the white point x value
         /// </summary>
-        public float WhitePointX
+        public double WhitePointX
         {
             get
             {
                 var least = (int) Reader.ReadInt(Offset + 1, 2, 2);
                 var most = (int) Reader.ReadByte(Offset + 2);
-                return (most*4 + least)/1024f;
+                return (most*4 + least)/1024d;
             }
         }
 
         /// <summary>
         ///     Gets the white point y value
         /// </summary>
-        public float WhitePointY
+        public double WhitePointY
         {
             get
             {
                 var least = (int) Reader.ReadInt(Offset + 1, 0, 2);
                 var most = (int) Reader.ReadByte(Offset + 3);
-                return (most*4 + least)/1024f;
+                return (most*4 + least)/1024d;
             }
         }
 

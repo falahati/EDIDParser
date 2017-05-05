@@ -57,7 +57,7 @@ namespace EDIDParser
         ///     Gets the display gamma value (1.00 – 3.54)
         /// </summary>
         /// <exception cref="GammaValueNotAvailableException">There is no information about the gamma property of the display.</exception>
-        public float DisplayGamma
+        public double DisplayGamma
         {
             get
             {
@@ -65,7 +65,7 @@ namespace EDIDParser
                 if (value == 0xFF)
                     throw new GammaValueNotAvailableException(
                         "There is no information about the gamma property of the display");
-                return (value + 100)/100f;
+                return (value + 100)/100d;
             }
         }
 
