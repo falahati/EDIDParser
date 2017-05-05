@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using WindowsDisplayAPI;
 using EDIDParser;
 using EDIDParserSample.Properties;
-using NvAPIWrapper.Display;
+using NvAPIWrapper.GPU;
+using NvAPIWrapper.Native.GPU;
 
 namespace EDIDParserSample
 {
@@ -57,19 +59,23 @@ namespace EDIDParserSample
                     "Read From Display Using NVIDIA GPU",
                     () =>
                     {
-                        ConsoleNavigation.PrintObject(Display.GetDisplays(), display =>
-                        {
-                            var gpu = display.PhysicalGPUs.First();
-                            var edidData = gpu.ReadEDIDData(display.Output);
-                            BrowseEDID(edidData, $"{display.Name} @ {gpu.FullName} EDID Data");
-                        }, "NVIDIA Displays", "Select a Display to parse EDID data.");
+                        ConsoleNavigation.PrintObject(
+                            PhysicalGPU.GetPhysicalGPUs()
+                                .SelectMany(gpu => gpu.GetConnectedDisplayDevices(ConnectedIdsFlag.None))
+                                .ToArray(),
+                            display =>
+                            {
+                                var edidData = display.PhysicalGPU.ReadEDIDData(display.Output);
+                                BrowseEDID(edidData,
+                                    $"DisplayDevice #{display.DisplayId} @ {display.PhysicalGPU.FullName} EDID Data");
+                            }, "NVIDIA Displays", "Select a Display to parse EDID data.");
                     }
                 },
                 {
                     "Read From Windows Registry",
                     () =>
                     {
-                        ConsoleNavigation.PrintObject(WindowsDisplayAPI.Display.GetDisplays().ToArray(), display =>
+                        ConsoleNavigation.PrintObject(Display.GetDisplays().ToArray(), display =>
                         {
                             byte[] edidData;
                             using (var key = display.OpenDevicePnPKey())
