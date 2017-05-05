@@ -27,5 +27,11 @@ namespace EDIDParser.Descriptors
         ///     Gets the descriptor type identification number
         /// </summary>
         public uint DescriptorCode => Reader.ReadByte(Offset + 3);
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"ManufacturerDescriptor({DescriptorCode:X2})";
+        }
     }
 }

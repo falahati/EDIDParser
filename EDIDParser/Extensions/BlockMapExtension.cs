@@ -21,5 +21,11 @@ namespace EDIDParser.Extensions
         /// </summary>
         public IEnumerable<ExtensionType> ExtensionTypes
             => Reader.ReadBytes(Offset + 1, 126).Where(b => b > 0).Select(b => (ExtensionType) b);
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"BlockMapExtension(ExtensionType[{ExtensionTypes.Count()}])";
+        }
     }
 }

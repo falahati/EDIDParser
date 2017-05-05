@@ -115,5 +115,12 @@ namespace EDIDParser.Descriptors
                 return (uint) Reader.ReadByte(Offset + 12)*2000;
             }
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return
+                $"MonitorRangeLimitsDescriptor([{MinimumHorizontalFieldRate}, {MaximumHorizontalFieldRate}] [{MinimumVerticalFieldRate}, {MaximumVerticalFieldRate}]{(IsSecondaryGTFSupported ? " GTF" : "")})";
+        }
     }
 }

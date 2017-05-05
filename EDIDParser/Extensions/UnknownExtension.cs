@@ -18,5 +18,11 @@
         ///     Gets the block revision number
         /// </summary>
         public uint Revision => Reader.ReadByte(Offset + 1);
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"UnknownExtension({Type} v{Revision})";
+        }
     }
 }

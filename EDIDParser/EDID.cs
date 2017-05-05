@@ -236,5 +236,11 @@ namespace EDIDParser
                 }
             }
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"{ManufacturerCode}{ProductCode} EDID v{EDIDVersion.ToString(2)} - {SerialNumber}";
+        }
     }
 }

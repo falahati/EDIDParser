@@ -48,5 +48,11 @@ namespace EDIDParser
 
         /// <inheritdoc />
         public uint Width { get; }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"{Width}×{Height} @ {Frequency}";
+        }
     }
 }

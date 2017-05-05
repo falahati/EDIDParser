@@ -68,5 +68,14 @@ namespace EDIDParser.Descriptors
                 return (most*4 + least)/1024f;
             }
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            var str = $"AdditionalWhitePointDescriptor( [{Index}] ({WhitePointX}, {WhitePointY}) {Gamma} )";
+            if (NextDescriptor != null)
+                str += ", " + NextDescriptor;
+            return str;
+        }
     }
 }

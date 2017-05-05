@@ -260,5 +260,12 @@ namespace EDIDParser
                 return (AnalogVideoWhiteLevel) _reader.ReadInt(20, 5, 2);
             }
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return (IsDigital ? "Digital" : "Analog") + " " + (IsProjector ? "Projector" : "Display") + " " +
+                   (IsDigital ? DigitalDisplayType.ToString() : AnalogDisplayType.ToString());
+        }
     }
 }

@@ -42,5 +42,11 @@ namespace EDIDParser.Descriptors
                 }
             }
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"AdditionalStandardTimingDescriptor(StandardTiming[{Timings.Count()}])";
+        }
     }
 }

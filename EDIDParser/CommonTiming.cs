@@ -134,5 +134,11 @@ namespace EDIDParser
                 }
             }
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"{Width}×{Height}{(IsInterlaced ? "i" : "p")} @ {Frequency}";
+        }
     }
 }

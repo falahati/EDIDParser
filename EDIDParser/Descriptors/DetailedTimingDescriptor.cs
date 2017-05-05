@@ -239,5 +239,11 @@ namespace EDIDParser.Descriptors
                 return most*8 + least;
             }
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"DetailedTimingDescriptor({SyncType}, {StereoMode})";
+        }
     }
 }

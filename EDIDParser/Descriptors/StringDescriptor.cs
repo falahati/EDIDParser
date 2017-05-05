@@ -46,7 +46,7 @@ namespace EDIDParser.Descriptors
         /// <inheritdoc />
         public override string ToString()
         {
-            return Value;
+            return $"StringDescriptor({Type}: {Value})";
         }
     }
 }
