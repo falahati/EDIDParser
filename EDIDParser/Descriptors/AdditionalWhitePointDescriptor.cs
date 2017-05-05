@@ -10,27 +10,32 @@ namespace EDIDParser.Descriptors
     {
         private static readonly byte[] FixedHeader = {0x00, 0x00, 0x00, 0xFB, 0x00};
 
+        private readonly int _internalOffset = 5;
+
         internal AdditionalWhitePointDescriptor(EDID edid, BitAwareReader reader, int offset,
-            bool firstDescriptor = true) : base(edid, reader, offset)
+            int internalOffset = 0) : base(edid, reader, offset)
         {
-            if (firstDescriptor)
+            if (internalOffset == 0)
             {
                 if (!Reader.ReadBytes(Offset, 5).SequenceEqual(FixedHeader))
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
-                NextDescriptor = new AdditionalWhitePointDescriptor(edid, reader, offset + 10, false);
-                Offset += 5;
+                NextDescriptor = new AdditionalWhitePointDescriptor(edid, reader, offset, internalOffset + 5);
+            }
+            else
+            {
+                _internalOffset = internalOffset + 5;
             }
         }
 
         /// <summary>
         ///     Gets the gamma value (1.0–3.54)
         /// </summary>
-        public double Gamma => (Reader.ReadByte(Offset + 4) + 100)/100d;
+        public double Gamma => (Reader.ReadByte(Offset + _internalOffset + 4) + 100)/100d;
 
         /// <summary>
         ///     Gets the white point index number
         /// </summary>
-        public uint Index => Reader.ReadByte(Offset);
+        public uint Index => Reader.ReadByte(Offset + _internalOffset);
 
 
         /// <summary>
@@ -50,8 +55,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
-                var least = (int) Reader.ReadInt(Offset + 1, 2, 2);
-                var most = (int) Reader.ReadByte(Offset + 2);
+                var least = (int) Reader.ReadInt(Offset + _internalOffset + 1, 2, 2);
+                var most = (int) Reader.ReadByte(Offset + _internalOffset + 2);
                 return (most*4 + least)/1024d;
             }
         }
@@ -63,8 +68,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
-                var least = (int) Reader.ReadInt(Offset + 1, 0, 2);
-                var most = (int) Reader.ReadByte(Offset + 3);
+                var least = (int) Reader.ReadInt(Offset + _internalOffset + 1, 0, 2);
+                var most = (int) Reader.ReadByte(Offset + _internalOffset + 3);
                 return (most*4 + least)/1024d;
             }
         }
