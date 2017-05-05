@@ -6,7 +6,10 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("EDIDParser Library")]
-[assembly: AssemblyDescription("EDIDParser is a library allowing all .Net developers to parse and to extract information from raw EDID binary data. (Extended Display Identification Data)")]
+[assembly:
+    AssemblyDescription(
+        "EDIDParser is a library allowing all .Net developers to parse and to extract information from raw EDID binary data. (Extended Display Identification Data)"
+    )]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("https://falahati.net")]
 [assembly: AssemblyProduct("EDIDParser")]

@@ -120,7 +120,8 @@
         /// <inheritdoc />
         public override string ToString()
         {
-            return $"RGBW([{RedX:0.000}, {RedY:0.000}] [{GreenX:0.000}, {GreenY:0.000}] [{BlueX:0.000}, {BlueY:0.000}] [{WhiteX:0.000}, {WhiteY:0.000}])";
+            return
+                $"RGBW([{RedX:0.000}, {RedY:0.000}] [{GreenX:0.000}, {GreenY:0.000}] [{BlueX:0.000}, {BlueY:0.000}] [{WhiteX:0.000}, {WhiteY:0.000}])";
         }
     }
 }
