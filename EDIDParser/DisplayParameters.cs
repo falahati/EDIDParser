@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using EDIDParser.Enums;
 using EDIDParser.Exceptions;
 
@@ -7,7 +8,7 @@ namespace EDIDParser
     /// <summary>
     ///     Represents the basic display parameters of a device
     /// </summary>
-    public class DisplayParameters
+    public class DisplayParameters : IEquatable<DisplayParameters>
     {
         private readonly EDID _edid;
         private readonly BitAwareReader _reader;
@@ -37,7 +38,6 @@ namespace EDIDParser
         ///     blue, and white
         /// </summary>
         public ChromaticityCoordinates ChromaticityCoordinates => new ChromaticityCoordinates(_reader);
-
 
         /// <summary>
         ///     Gets the display type of this digital device
@@ -259,6 +259,42 @@ namespace EDIDParser
                     throw new DigitalDisplayException("The device is not analog.");
                 return (AnalogVideoWhiteLevel) _reader.ReadInt(20, 5, 2);
             }
+        }
+
+
+        /// <inheritdoc />
+        public bool Equals(DisplayParameters other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return _reader.ReadBytes(20, 15).SequenceEqual(other._reader.ReadBytes(20, 15));
+        }
+
+        /// <inheritdoc />
+        public static bool operator ==(DisplayParameters left, DisplayParameters right)
+        {
+            return Equals(left, right);
+        }
+
+        /// <inheritdoc />
+        public static bool operator !=(DisplayParameters left, DisplayParameters right)
+        {
+            return !Equals(left, right);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((DisplayParameters) obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return _reader?.ReadBytes(20, 15).GetHashCode() ?? 0;
         }
 
         /// <inheritdoc />

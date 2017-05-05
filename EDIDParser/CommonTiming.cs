@@ -6,7 +6,7 @@ namespace EDIDParser
     /// <summary>
     ///     Represents a common timing
     /// </summary>
-    public class CommonTiming : ITiming
+    public class CommonTiming : ITiming, IEquatable<CommonTiming>
     {
         internal CommonTiming(CommonTimingIdentification timingId)
         {
@@ -22,6 +22,24 @@ namespace EDIDParser
         ///     Gets a boolean value indicating that the timing is interlaced
         /// </summary>
         public bool IsInterlaced => Identification == CommonTimingIdentification.Timing1024X768At87HzInterlaced;
+
+        /// <inheritdoc />
+        public bool Equals(CommonTiming other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Identification == other.Identification;
+        }
+
+        /// <inheritdoc />
+        public bool Equals(ITiming other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return other.GetType() == GetType()
+                ? Equals((CommonTiming) other)
+                : (Width == other.Width) && (Height == other.Height) && (Frequency == other.Frequency) && !IsInterlaced;
+        }
 
         /// <inheritdoc />
         public uint Frequency
@@ -133,6 +151,33 @@ namespace EDIDParser
                         throw new ArgumentOutOfRangeException();
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public static bool operator ==(CommonTiming left, CommonTiming right)
+        {
+            return Equals(left, right);
+        }
+
+        /// <inheritdoc />
+        public static bool operator !=(CommonTiming left, CommonTiming right)
+        {
+            return !Equals(left, right);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
+            return obj is ITiming && Equals((ITiming) obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return (int) Identification;
         }
 
         /// <inheritdoc />

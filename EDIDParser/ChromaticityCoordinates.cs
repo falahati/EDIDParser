@@ -1,9 +1,12 @@
-﻿namespace EDIDParser
+﻿using System;
+using System.Linq;
+
+namespace EDIDParser
 {
     /// <summary>
     ///     Represents the CIE chromaticity xy coordinates for red, green, blue, and white
     /// </summary>
-    public class ChromaticityCoordinates
+    public class ChromaticityCoordinates : IEquatable<ChromaticityCoordinates>
     {
         private readonly BitAwareReader _reader;
 
@@ -114,6 +117,41 @@
                 var most = (int) _reader.ReadByte(34);
                 return (most*4 + least)/1024d;
             }
+        }
+
+        /// <inheritdoc />
+        public bool Equals(ChromaticityCoordinates other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return _reader.ReadBytes(25, 10).SequenceEqual(other._reader.ReadBytes(25, 10));
+        }
+
+        /// <inheritdoc />
+        public static bool operator ==(ChromaticityCoordinates left, ChromaticityCoordinates right)
+        {
+            return Equals(left, right);
+        }
+
+        /// <inheritdoc />
+        public static bool operator !=(ChromaticityCoordinates left, ChromaticityCoordinates right)
+        {
+            return !Equals(left, right);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((ChromaticityCoordinates) obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return _reader?.ReadBytes(25, 10).GetHashCode() ?? 0;
         }
 
 

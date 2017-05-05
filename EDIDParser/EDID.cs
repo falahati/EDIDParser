@@ -13,7 +13,7 @@ namespace EDIDParser
     /// <summary>
     ///     Represents a Extended Display Identification Data instance
     /// </summary>
-    public class EDID
+    public class EDID : IEquatable<EDID>
     {
         private static readonly byte[] FixedHeader = {0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00};
         private readonly BitAwareReader _reader;
@@ -235,6 +235,41 @@ namespace EDIDParser
                     }
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public bool Equals(EDID other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return _reader.ReadBytes(0, 128).SequenceEqual(other._reader.ReadBytes(0, 128));
+        }
+
+        /// <inheritdoc />
+        public static bool operator ==(EDID left, EDID right)
+        {
+            return Equals(left, right);
+        }
+
+        /// <inheritdoc />
+        public static bool operator !=(EDID left, EDID right)
+        {
+            return !Equals(left, right);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((EDID) obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return _reader?.ReadBytes(0, 128).GetHashCode() ?? 0;
         }
 
         /// <inheritdoc />

@@ -1,9 +1,11 @@
-﻿namespace EDIDParser
+﻿using System;
+
+namespace EDIDParser
 {
     /// <summary>
     ///     Defines the necessary properties of a display timing
     /// </summary>
-    public interface ITiming
+    public interface ITiming : IEquatable<ITiming>
     {
         /// <summary>
         ///     Gets the timing frequency
