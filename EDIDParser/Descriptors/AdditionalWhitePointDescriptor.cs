@@ -12,8 +12,13 @@ namespace EDIDParser.Descriptors
 
         private readonly int _internalOffset = 5;
 
-        internal AdditionalWhitePointDescriptor(EDID edid, BitAwareReader reader, int offset,
-            int internalOffset = 0) : base(edid, reader, offset)
+        internal AdditionalWhitePointDescriptor(EDID edid, BitAwareReader reader, int offset)
+            : this(edid, reader, offset, 0)
+        {
+        }
+
+        internal AdditionalWhitePointDescriptor(EDID edid, BitAwareReader reader, int offset, int internalOffset)
+            : base(edid, reader, offset)
         {
             if (internalOffset == 0)
             {
