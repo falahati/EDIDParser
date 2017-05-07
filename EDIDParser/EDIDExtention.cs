@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using EDIDParser.Enums;
 using EDIDParser.Exceptions;
 
@@ -49,6 +50,29 @@ namespace EDIDParser
         public static bool operator !=(EDIDExtension left, EDIDExtension right)
         {
             return !Equals(left, right);
+        }
+
+        internal static EDIDExtension FromData(EDID edid, BitAwareReader reader, int offset)
+        {
+            var types =
+                Assembly.GetAssembly(typeof(EDIDExtension)).GetTypes().Where(t => t.IsSubclassOf(typeof(EDIDExtension)));
+            foreach (var type in types)
+            {
+                EDIDExtension value = null;
+                try
+                {
+                    value =
+                        Activator.CreateInstance(type, BindingFlags.NonPublic | BindingFlags.Instance, null,
+                            new object[] {edid, reader, offset}, null) as EDIDExtension;
+                }
+                catch
+                {
+                    // ignored
+                }
+                if (value != null)
+                    return value;
+            }
+            return null;
         }
 
         /// <inheritdoc />

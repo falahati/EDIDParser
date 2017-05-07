@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
-using EDIDParser.Descriptors;
 using EDIDParser.Enums;
 using EDIDParser.Exceptions;
-using EDIDParser.Extensions;
 
 namespace EDIDParser
 {
@@ -46,32 +43,12 @@ namespace EDIDParser
         {
             get
             {
-                var types = new[]
-                {
-                    typeof(AdditionalStandardTimingDescriptor),
-                    typeof(AdditionalWhitePointDescriptor),
-                    typeof(DetailedTimingDescriptor),
-                    typeof(MonitorRangeLimitsDescriptor),
-                    typeof(StringDescriptor),
-                    typeof(ManufacturerDescriptor)
-                };
                 for (var i = 54; i < 126; i += 18)
-                    foreach (var type in types)
-                    {
-                        EDIDDescriptor value = null;
-                        try
-                        {
-                            value =
-                                Activator.CreateInstance(type, BindingFlags.NonPublic | BindingFlags.Instance, null,
-                                    new object[] {this, _reader, i}, null) as EDIDDescriptor;
-                        }
-                        catch
-                        {
-                            // ignored
-                        }
-                        if (value != null)
-                            yield return value;
-                    }
+                {
+                    var descriptor = EDIDDescriptor.FromData(this, _reader, i);
+                    if (descriptor != null)
+                        yield return descriptor;
+                }
             }
         }
 
@@ -93,28 +70,12 @@ namespace EDIDParser
         {
             get
             {
-                var types = new[]
-                {
-                    typeof(BlockMapExtension),
-                    typeof(UnknownExtension)
-                };
                 for (var i = 1; i <= NumberOfExtensions; i++)
-                    foreach (var type in types)
-                    {
-                        EDIDExtension value = null;
-                        try
-                        {
-                            value =
-                                Activator.CreateInstance(type, BindingFlags.NonPublic | BindingFlags.Instance, null,
-                                    new object[] {this, _reader, i*128}, null) as EDIDExtension;
-                        }
-                        catch
-                        {
-                            // ignored
-                        }
-                        if (value != null)
-                            yield return value;
-                    }
+                {
+                    var extension = EDIDExtension.FromData(this, _reader, i*128);
+                    if (extension != null)
+                        yield return extension;
+                }
             }
         }
 

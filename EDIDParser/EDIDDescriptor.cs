@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 
 namespace EDIDParser
 {
@@ -37,6 +38,31 @@ namespace EDIDParser
         public static bool operator !=(EDIDDescriptor left, EDIDDescriptor right)
         {
             return !Equals(left, right);
+        }
+
+        internal static EDIDDescriptor FromData(EDID edid, BitAwareReader reader, int offset)
+        {
+            var types =
+                Assembly.GetAssembly(typeof(EDIDDescriptor))
+                    .GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(EDIDDescriptor)));
+            foreach (var type in types)
+            {
+                EDIDDescriptor value = null;
+                try
+                {
+                    value =
+                        Activator.CreateInstance(type, BindingFlags.NonPublic | BindingFlags.Instance, null,
+                            new object[] {edid, reader, offset}, null) as EDIDDescriptor;
+                }
+                catch
+                {
+                    // ignored
+                }
+                if (value != null)
+                    return value;
+            }
+            return null;
         }
 
         /// <inheritdoc />
