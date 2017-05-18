@@ -10,27 +10,42 @@ namespace EDIDParser.Descriptors
     {
         internal ManufacturerDescriptor(EDID edid, BitAwareReader reader, int offset) : base(edid, reader, offset)
         {
-            if (Reader.ReadBytes(Offset, 3).Any(b => b != 0))
-                throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
-            if (Reader.ReadByte(Offset + 4) != 0)
-                throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
-            if (Reader.ReadByte(Offset + 3) > 15)
-                throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
+            IsValid = Reader.ReadBytes(Offset, 3).Any(b => b == 0) &&
+                      (Reader.ReadByte(Offset + 3) < 16) &&
+                      (Reader.ReadByte(Offset + 4) == 0);
         }
 
         /// <summary>
         ///     Gets the raw 13byte binary data of the block
         /// </summary>
-        public byte[] Data => Reader.ReadBytes(Offset + 5, 13);
+        public byte[] Data
+        {
+            get
+            {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
+                return Reader.ReadBytes(Offset + 5, 13);
+            }
+        }
 
         /// <summary>
         ///     Gets the descriptor type identification number
         /// </summary>
-        public uint DescriptorCode => Reader.ReadByte(Offset + 3);
+        public uint DescriptorCode
+        {
+            get
+            {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
+                return Reader.ReadByte(Offset + 3);
+            }
+        }
 
         /// <inheritdoc />
         public override string ToString()
         {
+            if (!IsValid)
+                throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
             return $"ManufacturerDescriptor({DescriptorCode:X2})";
         }
     }

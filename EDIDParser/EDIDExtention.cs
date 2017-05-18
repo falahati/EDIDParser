@@ -26,6 +26,12 @@ namespace EDIDParser
                 throw new InvalidExtensionException("Extension checksum failed.");
         }
 
+
+        /// <summary>
+        ///     Gets a boolean value indicating the data validity of this extension
+        /// </summary>
+        public bool IsValid { get; protected set; }
+
         /// <summary>
         ///     Gets the extension block type
         /// </summary>
@@ -57,21 +63,17 @@ namespace EDIDParser
             var types =
                 Assembly.GetAssembly(typeof(EDIDExtension)).GetTypes().Where(t => t.IsSubclassOf(typeof(EDIDExtension)));
             foreach (var type in types)
-            {
-                EDIDExtension value = null;
                 try
                 {
-                    value =
-                        Activator.CreateInstance(type, BindingFlags.NonPublic | BindingFlags.Instance, null,
-                            new object[] {edid, reader, offset}, null) as EDIDExtension;
+                    var value = Activator.CreateInstance(type, BindingFlags.NonPublic | BindingFlags.Instance, null,
+                        new object[] {edid, reader, offset}, null) as EDIDExtension;
+                    if (value?.IsValid == true)
+                        return value;
                 }
                 catch
                 {
                     // ignored
                 }
-                if (value != null)
-                    return value;
-            }
             return null;
         }
 

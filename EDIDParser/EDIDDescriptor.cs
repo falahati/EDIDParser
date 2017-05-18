@@ -20,6 +20,11 @@ namespace EDIDParser
             Offset = offset;
         }
 
+        /// <summary>
+        ///     Gets a boolean value indicating the data validity of this descriptor
+        /// </summary>
+        public bool IsValid { get; protected set; }
+
         /// <inheritdoc />
         public bool Equals(EDIDDescriptor other)
         {
@@ -47,21 +52,17 @@ namespace EDIDParser
                     .GetTypes()
                     .Where(t => t.IsSubclassOf(typeof(EDIDDescriptor)));
             foreach (var type in types)
-            {
-                EDIDDescriptor value = null;
                 try
                 {
-                    value =
-                        Activator.CreateInstance(type, BindingFlags.NonPublic | BindingFlags.Instance, null,
-                            new object[] {edid, reader, offset}, null) as EDIDDescriptor;
+                    var value = Activator.CreateInstance(type, BindingFlags.NonPublic | BindingFlags.Instance, null,
+                        new object[] {edid, reader, offset}, null) as EDIDDescriptor;
+                    if (value?.IsValid == true)
+                        return value;
                 }
                 catch
                 {
                     // ignored
                 }
-                if (value != null)
-                    return value;
-            }
             return null;
         }
 

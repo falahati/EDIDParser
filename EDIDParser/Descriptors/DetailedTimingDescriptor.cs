@@ -10,8 +10,7 @@ namespace EDIDParser.Descriptors
     {
         internal DetailedTimingDescriptor(EDID edid, BitAwareReader reader, int offset) : base(edid, reader, offset)
         {
-            if (Reader.ReadInt(Offset, 0, 2*8) == 0)
-                throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
+            IsValid = Reader.ReadInt(Offset, 0, 2*8) != 0;
         }
 
         /// <summary>
@@ -21,6 +20,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 2);
                 var most = (uint) Reader.ReadInt(Offset + 4, 4, 4);
                 return most*16 + least;
@@ -34,6 +35,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 3);
                 var most = (uint) Reader.ReadInt(Offset + 4, 0, 4);
                 return most*16 + least;
@@ -43,7 +46,15 @@ namespace EDIDParser.Descriptors
         /// <summary>
         ///     Gets the horizontal border pixels (each side; total is twice this)
         /// </summary>
-        public uint HorizontalBorderPixels => Reader.ReadByte(Offset + 15);
+        public uint HorizontalBorderPixels
+        {
+            get
+            {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
+                return Reader.ReadByte(Offset + 15);
+            }
+        }
 
         /// <summary>
         ///     Gets the horizontal display size, mm (0–4095 mm, 161 in)
@@ -52,6 +63,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 12);
                 var most = (uint) Reader.ReadInt(Offset + 14, 4, 4);
                 return most*16 + least;
@@ -65,6 +78,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 8);
                 var most = (uint) Reader.ReadInt(Offset + 11, 6, 2);
                 return most*8 + least;
@@ -79,6 +94,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 if (!EDID.DisplayParameters.IsDigital)
                     throw new AnalogDisplayException("The device is not digital.");
                 return (DigitalSyncPolarity) Reader.ReadInt(Offset + 17, 1, 1);
@@ -92,6 +109,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 9);
                 var most = (uint) Reader.ReadInt(Offset + 11, 4, 2);
                 return most*8 + least;
@@ -101,7 +120,15 @@ namespace EDIDParser.Descriptors
         /// <summary>
         ///     Gets a boolean value indicating that the timing's scan mode is interlaced
         /// </summary>
-        public bool IsInterlaced => Reader.ReadBit(Offset + 17, 7);
+        public bool IsInterlaced
+        {
+            get
+            {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
+                return Reader.ReadBit(Offset + 17, 7);
+            }
+        }
 
         /// <summary>
         ///     Gets a boolean value indicating that the sync is on all 3 RGB lines (else green only)
@@ -111,6 +138,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 if (EDID.DisplayParameters.IsDigital)
                     throw new DigitalDisplayException("The device is not analog.");
                 return Reader.ReadBit(Offset + 17, 1);
@@ -125,6 +154,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 if (EDID.DisplayParameters.IsDigital)
                     throw new DigitalDisplayException("The device is not analog.");
                 return Reader.ReadBit(Offset + 17, 2);
@@ -134,7 +165,15 @@ namespace EDIDParser.Descriptors
         /// <summary>
         ///     Gets the pixel clock in hz. (0.01–655.35 MHz)
         /// </summary>
-        public ulong PixelClock => Reader.ReadInt(Offset, 0, 2*8)*10000;
+        public ulong PixelClock
+        {
+            get
+            {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
+                return Reader.ReadInt(Offset, 0, 2*8)*10000;
+            }
+        }
 
         /// <summary>
         ///     Gets the type of the stereo signal supported
@@ -143,6 +182,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadInt(Offset + 17, 5, 2);
                 if (least == 0)
                     return StereoMode.NoStereo;
@@ -154,7 +195,15 @@ namespace EDIDParser.Descriptors
         /// <summary>
         ///     Gets the type of display sync signal
         /// </summary>
-        public SyncType SyncType => (SyncType) Reader.ReadInt(Offset + 17, 3, 2);
+        public SyncType SyncType
+        {
+            get
+            {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
+                return (SyncType) Reader.ReadInt(Offset + 17, 3, 2);
+            }
+        }
 
         /// <summary>
         ///     Gets the vertical active lines (0–4095)
@@ -163,6 +212,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 5);
                 var most = (uint) Reader.ReadInt(Offset + 7, 4, 4);
                 return most*16 + least;
@@ -176,6 +227,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 6);
                 var most = (uint) Reader.ReadInt(Offset + 7, 0, 4);
                 return most*16 + least;
@@ -185,7 +238,15 @@ namespace EDIDParser.Descriptors
         /// <summary>
         ///     Gets the vertical border lines (each side; total is twice this)
         /// </summary>
-        public uint VerticalBorderPixels => Reader.ReadByte(Offset + 16);
+        public uint VerticalBorderPixels
+        {
+            get
+            {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
+                return Reader.ReadByte(Offset + 16);
+            }
+        }
 
         /// <summary>
         ///     Gets the vertical display size, mm
@@ -194,6 +255,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 13);
                 var most = (uint) Reader.ReadInt(Offset + 14, 0, 4);
                 return most*16 + least;
@@ -207,6 +270,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadInt(Offset + 10, 4, 4);
                 var most = (uint) Reader.ReadInt(Offset + 11, 2, 2);
                 return most*8 + least;
@@ -221,6 +286,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 if (!EDID.DisplayParameters.IsDigital)
                     throw new AnalogDisplayException("The device is not digital.");
                 return (DigitalSyncPolarity) Reader.ReadInt(Offset + 17, 2, 1);
@@ -234,6 +301,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadInt(Offset + 10, 0, 4);
                 var most = (uint) Reader.ReadInt(Offset + 11, 0, 2);
                 return most*8 + least;
@@ -243,6 +312,8 @@ namespace EDIDParser.Descriptors
         /// <inheritdoc />
         public override string ToString()
         {
+            if (!IsValid)
+                throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
             return $"DetailedTimingDescriptor({SyncType}, {StereoMode})";
         }
     }

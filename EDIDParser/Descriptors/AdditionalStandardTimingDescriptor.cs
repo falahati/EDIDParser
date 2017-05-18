@@ -16,8 +16,7 @@ namespace EDIDParser.Descriptors
         internal AdditionalStandardTimingDescriptor(EDID edid, BitAwareReader reader, int offset)
             : base(edid, reader, offset)
         {
-            if (!Reader.ReadBytes(Offset, 5).SequenceEqual(FixedHeader))
-                throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
+            IsValid = Reader.ReadBytes(Offset, 5).SequenceEqual(FixedHeader);
         }
 
         /// <summary>
@@ -27,6 +26,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 for (var i = Offset; i < Offset + 13; i += 2)
                 {
                     var isValid = Reader.ReadInt(i, 0, 2*8) != 0x0101;
@@ -46,6 +47,8 @@ namespace EDIDParser.Descriptors
         /// <inheritdoc />
         public override string ToString()
         {
+            if (!IsValid)
+                throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
             return $"AdditionalStandardTimingDescriptor(StandardTiming[{Timings.Count()}])";
         }
     }

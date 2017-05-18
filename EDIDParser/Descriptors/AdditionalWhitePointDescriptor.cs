@@ -22,12 +22,13 @@ namespace EDIDParser.Descriptors
         {
             if (internalOffset == 0)
             {
-                if (!Reader.ReadBytes(Offset, 5).SequenceEqual(FixedHeader))
-                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
-                NextDescriptor = new AdditionalWhitePointDescriptor(edid, reader, offset, internalOffset + 5);
+                IsValid = Reader.ReadBytes(Offset, 5).SequenceEqual(FixedHeader);
+                if (IsValid)
+                    NextDescriptor = new AdditionalWhitePointDescriptor(edid, reader, offset, internalOffset + 5);
             }
             else
             {
+                IsValid = true;
                 _internalOffset = internalOffset + 5;
             }
         }
@@ -35,18 +36,42 @@ namespace EDIDParser.Descriptors
         /// <summary>
         ///     Gets the gamma value (1.0–3.54)
         /// </summary>
-        public double Gamma => (Reader.ReadByte(Offset + _internalOffset + 4) + 100)/100d;
+        public double Gamma
+        {
+            get
+            {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
+                return (Reader.ReadByte(Offset + _internalOffset + 4) + 100)/100d;
+            }
+        }
 
         /// <summary>
         ///     Gets the white point index number
         /// </summary>
-        public uint Index => Reader.ReadByte(Offset + _internalOffset);
+        public uint Index
+        {
+            get
+            {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
+                return Reader.ReadByte(Offset + _internalOffset);
+            }
+        }
 
 
         /// <summary>
         ///     Gets a boolean value indicating the availability of this descriptor
         /// </summary>
-        public bool IsUsed => Index > 0;
+        public bool IsUsed
+        {
+            get
+            {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
+                return Index > 0;
+            }
+        }
 
         /// <summary>
         ///     Gets an other instance of the AdditionalWhitePointDescriptor type with more information, or null if not available
@@ -60,6 +85,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (int) Reader.ReadInt(Offset + _internalOffset + 1, 2, 2);
                 var most = (int) Reader.ReadByte(Offset + _internalOffset + 2);
                 return (most*4 + least)/1024d;
@@ -73,6 +100,8 @@ namespace EDIDParser.Descriptors
         {
             get
             {
+                if (!IsValid)
+                    throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (int) Reader.ReadInt(Offset + _internalOffset + 1, 0, 2);
                 var most = (int) Reader.ReadByte(Offset + _internalOffset + 3);
                 return (most*4 + least)/1024d;
@@ -82,6 +111,8 @@ namespace EDIDParser.Descriptors
         /// <inheritdoc />
         public override string ToString()
         {
+            if (!IsValid)
+                throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
             var str = $"AdditionalWhitePointDescriptor( [{Index}] ({WhitePointX}, {WhitePointY}) {Gamma} )";
             if (NextDescriptor != null)
                 str += ", " + NextDescriptor;
