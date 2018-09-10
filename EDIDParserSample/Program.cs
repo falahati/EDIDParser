@@ -71,6 +71,7 @@ namespace EDIDParserSample
                             }, "NVIDIA Displays", "Select a Display to parse EDID data.");
                     }
                 },
+#if !NETCOREAPP
                 {
                     "Read From Windows Registry",
                     () =>
@@ -90,6 +91,7 @@ namespace EDIDParserSample
                         }, "Windows Displays", "Select a Display to parse EDID data.");
                     }
                 }
+#endif
             };
             ConsoleNavigation.PrintNavigation(paths, "EDID Parser Sample",
                 "Select an option to explore EDID parser functionalities.");
