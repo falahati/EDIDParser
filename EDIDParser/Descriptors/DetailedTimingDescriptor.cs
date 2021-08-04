@@ -24,7 +24,7 @@ namespace EDIDParser.Descriptors
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 2);
                 var most = (uint) Reader.ReadInt(Offset + 4, 4, 4);
-                return most*16 + least;
+                return (most << 8) | least;
             }
         }
 
@@ -39,7 +39,7 @@ namespace EDIDParser.Descriptors
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 3);
                 var most = (uint) Reader.ReadInt(Offset + 4, 0, 4);
-                return most*16 + least;
+                return (most << 8) | least;
             }
         }
 
@@ -67,7 +67,7 @@ namespace EDIDParser.Descriptors
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 12);
                 var most = (uint) Reader.ReadInt(Offset + 14, 4, 4);
-                return most*16 + least;
+                return (most << 8) | least;
             }
         }
 
@@ -82,7 +82,7 @@ namespace EDIDParser.Descriptors
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 8);
                 var most = (uint) Reader.ReadInt(Offset + 11, 6, 2);
-                return most*8 + least;
+                return (most << 8) | least;
             }
         }
 
@@ -113,7 +113,7 @@ namespace EDIDParser.Descriptors
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 9);
                 var most = (uint) Reader.ReadInt(Offset + 11, 4, 2);
-                return most*8 + least;
+                return (most << 8) | least;
             }
         }
 
@@ -216,7 +216,7 @@ namespace EDIDParser.Descriptors
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 5);
                 var most = (uint) Reader.ReadInt(Offset + 7, 4, 4);
-                return most*16 + least;
+                return (most << 8) | least;
             }
         }
 
@@ -231,7 +231,7 @@ namespace EDIDParser.Descriptors
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 6);
                 var most = (uint) Reader.ReadInt(Offset + 7, 0, 4);
-                return most*16 + least;
+                return (most << 8) | least;
             }
         }
 
@@ -259,7 +259,7 @@ namespace EDIDParser.Descriptors
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadByte(Offset + 13);
                 var most = (uint) Reader.ReadInt(Offset + 14, 0, 4);
-                return most*16 + least;
+                return (most << 8) | least;
             }
         }
 
@@ -274,7 +274,7 @@ namespace EDIDParser.Descriptors
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadInt(Offset + 10, 4, 4);
                 var most = (uint) Reader.ReadInt(Offset + 11, 2, 2);
-                return most*8 + least;
+                return (most << 4) | least;
             }
         }
 
@@ -305,7 +305,7 @@ namespace EDIDParser.Descriptors
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (uint) Reader.ReadInt(Offset + 10, 0, 4);
                 var most = (uint) Reader.ReadInt(Offset + 11, 0, 2);
-                return most*8 + least;
+                return (most << 4) | least;
             }
         }
 

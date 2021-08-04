@@ -34,7 +34,7 @@ namespace EDIDParser.Descriptors
         }
 
         /// <summary>
-        ///     Gets the gamma value (1.0–3.54)
+        ///     Gets the gamma value (1.0-3.54)
         /// </summary>
         public double Gamma
         {
@@ -89,7 +89,7 @@ namespace EDIDParser.Descriptors
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (int) Reader.ReadInt(Offset + _internalOffset + 1, 2, 2);
                 var most = (int) Reader.ReadByte(Offset + _internalOffset + 2);
-                return (most*4 + least)/1024d;
+                return ((most << 2) | least)/1024d;
             }
         }
 
@@ -104,7 +104,7 @@ namespace EDIDParser.Descriptors
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 var least = (int) Reader.ReadInt(Offset + _internalOffset + 1, 0, 2);
                 var most = (int) Reader.ReadByte(Offset + _internalOffset + 3);
-                return (most*4 + least)/1024d;
+                return ((most << 2) | least)/1024d;
             }
         }
 
