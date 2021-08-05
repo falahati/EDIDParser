@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
-    <Version>1.2.0.3-dev0001</Version>
+    <Version>1.2.5.4</Version>
     <Company>falahati.net</Company>
     <Description>EDIDParser is a library allowing all .Net developers to parse and to extract information from raw EDID binary data. (Extended Display Identification Data)</Description>
     <Authors>Soroush Falahati</Authors>
@@ -12,11 +12,10 @@
     <PackageProjectUrl>https://github.com/falahati/EDIDParser</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/falahati/EDIDParser/blob/master/LICENSE</PackageLicenseUrl>
     <PackageIconUrl>https://github.com/falahati/EDIDParser/blob/master/EDIDParser/Icon.png?raw=true</PackageIconUrl>
-    <IncludeSymbols>true</IncludeSymbols>
-    <IncludeSource>true</IncludeSource>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Title>EDID Binary Parser</Title>
     <PackageId>EDIDParser</PackageId>
+    <AssemblyOriginatorKeyFile>OpenSourceStrongNameSignKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <BumpLabel>dev</BumpLabel>
@@ -24,10 +23,16 @@
     <OutputPath>..\Debug</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <EmbedAllSources>True</EmbedAllSources>
+    <DebugType>embedded</DebugType>
     <BumpRevision>True</BumpRevision>
     <BumpResetLabel>dev</BumpResetLabel>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <OutputPath>..\Release</OutputPath>
+    <DocumentationFile>..\Debug\EDIDParser.xml</DocumentationFile>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference PrivateAssets="all" Include="MSBump" Version="2.3.2">
