@@ -140,9 +140,9 @@ namespace EDIDParser.Descriptors
             {
                 if (!IsValid)
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
-                if (EDID.DisplayParameters.IsDigital)
-                    throw new DigitalDisplayException("The device is not analog.");
-                return Reader.ReadBit(Offset + 17, 1);
+                if (!EDID.DisplayParameters.IsDigital)
+                    return Reader.ReadBit(Offset + 17, 1);
+                return false;
             }
         }
 
@@ -156,9 +156,10 @@ namespace EDIDParser.Descriptors
             {
                 if (!IsValid)
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
-                if (EDID.DisplayParameters.IsDigital)
-                    throw new DigitalDisplayException("The device is not analog.");
-                return Reader.ReadBit(Offset + 17, 2);
+                if (!EDID.DisplayParameters.IsDigital)
+                    return Reader.ReadBit(Offset + 17, 2);
+                return false;
+
             }
         }
 

@@ -25,9 +25,9 @@ namespace EDIDParser.Descriptors
             {
                 if (!IsValid)
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
-                if (!IsSecondaryGTFSupported)
-                    throw new ExtendedTimingNotAvailable("Secondary GTF is not supported.");
-                return Reader.ReadByte(Offset + 13)/2d;
+                if (IsSecondaryGTFSupported)
+                    return Reader.ReadByte(Offset + 13) / 2d;
+                return 0;
             }
         }
 
@@ -41,9 +41,9 @@ namespace EDIDParser.Descriptors
             {
                 if (!IsValid)
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
-                if (!IsSecondaryGTFSupported)
-                    throw new ExtendedTimingNotAvailable("Secondary GTF is not supported.");
-                return Reader.ReadByte(Offset + 17)/2d;
+                if (IsSecondaryGTFSupported)
+                    return Reader.ReadByte(Offset + 17) / 2d;
+                return 0;
             }
         }
 
@@ -57,9 +57,9 @@ namespace EDIDParser.Descriptors
             {
                 if (!IsValid)
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
-                if (!IsSecondaryGTFSupported)
-                    throw new ExtendedTimingNotAvailable("Secondary GTF is not supported.");
-                return Reader.ReadByte(Offset + 16);
+                if (IsSecondaryGTFSupported)
+                    return Reader.ReadByte(Offset + 16);
+                return 0;
             }
         }
 
@@ -73,9 +73,9 @@ namespace EDIDParser.Descriptors
             {
                 if (!IsValid)
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
-                if (!IsSecondaryGTFSupported)
-                    throw new ExtendedTimingNotAvailable("Secondary GTF is not supported.");
-                return (ushort) Reader.ReadInt(Offset + 14, 0, 2*8);
+                if (IsSecondaryGTFSupported)
+                    return (ushort) Reader.ReadInt(Offset + 14, 0, 2*8);
+                return 0;
             }
         }
 
@@ -168,8 +168,8 @@ namespace EDIDParser.Descriptors
                 if (!IsValid)
                     throw new InvalidDescriptorException("The provided data does not belong to this descriptor.");
                 if (!IsSecondaryGTFSupported)
-                    throw new ExtendedTimingNotAvailable("Secondary GTF is not supported.");
-                return (uint) Reader.ReadByte(Offset + 12)*2000;
+                    return (uint)Reader.ReadByte(Offset + 12) * 2000;
+                return 0;
             }
         }
 
